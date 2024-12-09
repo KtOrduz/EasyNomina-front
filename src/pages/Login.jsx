@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
+import axios from "axios";
+import { useAuthStore } from "../store/authStore.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,8 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const setUser = useAuthStore((state) => state.setUser);
+  const User = useAuthStore((state) => state.user);
 
   // Validate email
   const validateEmail = (email) => {
@@ -58,13 +62,28 @@ const Login = () => {
     ) {
       setIsLoading(true);
 
-      // Simulación de llamada a la API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACK_URL}/api/login`,
+          formData,
+          { withCredentials: true },
+        );
+        setUser(response.data);
+      } catch (err) {
+        console.log(err);
+      }
 
       setIsLoading(false);
-      alert("Sesión iniciada con éxito");
     }
   };
+  // useEffect that shows on console the user data
+  useEffect(() => {
+    if (User) {
+      console.log(
+        `El usuario con el id ${User.id} ha iniciado sesión, el cual se identifica con el nombre de ${User.name}`,
+      );
+    }
+  }, [User]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 p-4">
