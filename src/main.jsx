@@ -7,6 +7,7 @@ import { Login } from "./pages/Login.jsx";
 import { Admin } from "./pages/Admin.jsx";
 import Employees from "./pages/Module/Admin/Employees.jsx";
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,7 +29,6 @@ const router = createBrowserRouter([
     element: <Employees />,
     errorElement: <NotFound />, 
   },
-
 ]);
 
 createRoot(document.getElementById("root")).render(
