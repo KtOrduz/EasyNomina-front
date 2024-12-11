@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
-import axios from "axios";
-import { useAuthStore } from "../store/authStore.js";
+import { useAuthStore } from "../store/authStore";
+import { loginRequest } from "../api/auth";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,12 +15,20 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const setUser = useAuthStore((state) => state.setUser);
-  const User = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
 
-  // Validate email
+  useEffect(() => {
+    if (user) {
+      navigate("/admin");
+    }
+  }, [user, navigate]);
+
+
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -36,6 +46,7 @@ const Login = () => {
       setErrors({ ...errors, email: "" });
     }
   };
+
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setFormData({ ...formData, password: value });
@@ -54,26 +65,23 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !errors.email &&
-      !errors.password &&
-      formData.email &&
-      formData.password
-    ) {
+    setErrorMessage("");
+
+    if (!errors.email && !errors.password && formData.email && formData.password) {
       setIsLoading(true);
-
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_BACK_URL}/api/login`,
-          formData,
-          { withCredentials: true },
-        );
-        setUser(response.data);
+        const response = await loginRequest(formData);
+        if (response.status === 200) {
+          setUser(response.data);
+        }
       } catch (err) {
-        console.log(err);
+        console.error("Error en el inicio de sesión:", err);
+        setErrorMessage(
+          err.response?.data?.message || "Error al iniciar sesión, intente nuevamente."
+        );
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     }
   };
   // useEffect that shows on console the user data
@@ -91,13 +99,16 @@ const Login = () => {
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Bienvenido
         </h1>
-
+        {errorMessage && (
+          <div className="mb-4 text-sm text-red-500 text-center">
+            {errorMessage}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <div className="relative">
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
-              aria-label="Email address"
             >
               Correo electrónico
             </label>
@@ -107,23 +118,16 @@ const Login = () => {
                 type="email"
                 id="email"
                 name="email"
-                autoComplete="email"
                 required
-                className={`w-full pl-10 pr-4 py-2 border ${errors.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none`}
+                className={`w-full pl-10 pr-4 py-2 border ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none`}
                 value={formData.email}
                 onChange={handleEmailChange}
-                aria-invalid={errors.email ? "true" : "false"}
-                aria-describedby={errors.email ? "email-error" : undefined}
               />
             </div>
             {errors.email && (
-              <p
-                className="mt-1 text-sm text-red-500"
-                id="email-error"
-                role="alert"
-              >
-                {errors.email}
-              </p>
+              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
             )}
           </div>
 
@@ -131,7 +135,6 @@ const Login = () => {
             <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-1"
-              aria-label="Password"
             >
               Contraseña
             </label>
@@ -141,41 +144,30 @@ const Login = () => {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
-                autoComplete="current-password"
                 required
-                className={`w-full pl-10 pr-12 py-2 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none`}
+                className={`w-full pl-10 pr-12 py-2 border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none`}
                 value={formData.password}
                 onChange={handlePasswordChange}
-                aria-invalid={errors.password ? "true" : "false"}
-                aria-describedby={
-                  errors.password ? "password-error" : undefined
-                }
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
             {errors.password && (
-              <p
-                className="mt-1 text-sm text-red-500"
-                id="password-error"
-                role="alert"
-              >
-                {errors.password}
-              </p>
+              <p className="mt-1 text-sm text-red-500">{errors.password}</p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
-            aria-label="Login button"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 flex items-center justify-center space-x-2 disabled:opacity-70"
           >
             {isLoading ? (
               <>

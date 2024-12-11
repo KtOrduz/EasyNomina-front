@@ -1,36 +1,28 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { HomePage } from "./pages/HomePage.jsx";
 import { NotFound } from "./pages/NotFound.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Admin } from "./pages/Admin.jsx";
-import Employees from "./pages/Module/Admin/Employees.jsx";
+import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: "/Login",
     element: <Login />,
     errorElement: <NotFound />,
   },
   {
-    path: "/Admin",
-    element: <Admin/>,
-    errorElement: <NotFound />,
-  },
-  {
-    path: "/Admin/Employees",
-    element: <Employees />,
-    errorElement: <NotFound />, 
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    ),
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />,
+  <RouterProvider router={router} />
 );
