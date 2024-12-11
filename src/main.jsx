@@ -1,9 +1,10 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { NotFound } from "./pages/NotFound.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Admin } from "./pages/Admin.jsx";
+import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -12,8 +13,12 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
   },
   {
-    path: "/Admin",
-    element: <Admin />,
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    ),
   },
 ]);
 

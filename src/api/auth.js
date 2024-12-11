@@ -2,20 +2,9 @@ import axios from "axios";
 
 const API = "https://easynomina-back.onrender.com/api";
 
-const axiosInstance = axios.create({
-  baseURL: API,
-});
+export const loginRequest = (credentials) => 
+  axios.post(`${API}/login`, credentials);
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export const loginRequest = (user) => axiosInstance.post(`/login`, user);
+// Otros métodos si es necesario
 export const registerEmployeeRequest = (employee) =>
-  axiosInstance.post(`/employee`, employee);
-
-export default axiosInstance;
+  axios.post(`${API}/employee`, employee);

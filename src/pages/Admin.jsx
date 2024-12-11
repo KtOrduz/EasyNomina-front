@@ -6,11 +6,13 @@ import {
   FilePlus2,
   ClipboardList,
 } from "lucide-react";
+import { useAuthStore } from "../store/authStore";
 import EmployeeRegistration from "./Module/Admin/EmployeeRegistration.jsx";
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [activeSubSection, setActiveSubSection] = useState(null);
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   const menuItems = [
     {
@@ -67,10 +69,15 @@ const Admin = () => {
     return activeItem ? activeItem.component : null;
   };
 
+  const handleLogout = () => {
+    clearUser();
+    window.location.href = "/"; // Redirige al login tras cerrar sesión
+  };
+
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
       {/* Módulo administrativo */}
-      <div className="flex flex-col w-64 bg-white shadow-md overflow-hidden">
+      <div className="flex flex-col w-70 bg-white shadow-md overflow-hidden">
         <div className="bg-blue-600 text-white p-4 text-center font-bold">
           Módulo administrativo
         </div>
@@ -139,6 +146,15 @@ const Admin = () => {
             )}
           </div>
         ))}
+        {/* Botón de cerrar sesión */}
+        <div className="mt-auto p-4">
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+          >
+            Cerrar sesión
+          </button>
+        </div>
       </div>
 
       {/* Contenido dinámico */}
