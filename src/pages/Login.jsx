@@ -85,13 +85,13 @@ const Login = () => {
     }
   };
   // useEffect that shows on console the user data
-  useEffect(() => {
-    if (User) {
-      console.log(
-        `El usuario con el id ${User.id} ha iniciado sesión, el cual se identifica con el nombre de ${User.name}`,
-      );
-    }
-  }, [User]);
+  // useEffect(() => {
+  //   if (User) {
+  //     console.log(
+  //       `El usuario con el id ${User.id} ha iniciado sesión, el cual se identifica con el nombre de ${User.name}`,
+  //     );
+  //   }
+  // }, [User]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 p-4">
