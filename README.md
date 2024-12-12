@@ -1,7 +1,7 @@
 ## Stack Tecnológico Backend y Frontend
 
-- **Backend**: Node.js, un entorno de ejecución para JavaScript que permite construir aplicaciones escalables y de alto rendimiento.
-- **Frontend**: React, una biblioteca de JavaScript para construir interfaces de usuario interactivas y reutilizables.
+- [**Backend**](https://github.com/stente3/EasyNomina-back): Node.js, un entorno de ejecución para JavaScript que permite construir aplicaciones escalables y de alto rendimiento.
+- [**Frontend**](https://github.com/stente3/EasyNomina-front): React, una biblioteca de JavaScript para construir interfaces de usuario interactivas y reutilizables.
 - **Arquitectura**: REST (API), permite una comunicación eficiente y estandarizada entre el frontend y el backend mediante el uso de URLs para la interacción con los recursos.
 
 ## Elección de Base de Datos
