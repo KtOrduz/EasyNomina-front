@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const API = "https://easynomina-back.onrender.com/api";
 
 export const loginRequest = (credentials) =>
@@ -7,4 +8,14 @@ export const loginRequest = (credentials) =>
 
 // Otros métodos si es necesario
 export const registerEmployeeRequest = (employee) =>
+  axios.post(`${API}/employee`, employee, { withCredentials: true });
+
+export const registerNomRequest = (employee) =>
+  axios.post(`${API}/employee`, employee, { withCredentials: true });
+
+
+export const registerNewsRequest = (employee) =>
+  axios.post(`${API}/employee`, employee, { withCredentials: true });
+
+export const registerNewsOthersRequest = (employee) =>
   axios.post(`${API}/employee`, employee, { withCredentials: true });

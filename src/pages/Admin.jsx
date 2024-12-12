@@ -8,6 +8,9 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import EmployeeRegistration from "./Module/Admin/EmployeeRegistration.jsx";
+import NomRegistration from "./Module/Admin/NomRegistration.jsx";
+import NewsRegistration from "./Module/Admin/NewsRegistration.jsx";
+import NewsOthersRegistration from "./Module/Admin/NewsOthersRegistration.jsx";
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -39,12 +42,28 @@ const Admin = () => {
       label: "Nóminas",
       icon: Briefcase,
       description: "Administración de pagos y procesos de nómina",
+      component: <NomRegistration />,
     },
     {
       id: "novedades",
       label: "Novedades",
       icon: Newspaper,
       description: "Horas extras, recargos y ausencias",
+      subMenu: [
+        {
+          id: "horas_extras_recargos",
+          label: "Horas extras y recargos",
+          icon: ClipboardList,
+          component: <NewsRegistration />,
+        },
+        {
+          id: "otros",
+          label: "Otros",
+          icon: ClipboardList,
+          component: <NewsOthersRegistration />,
+        },
+      ],
+
     },
   ];
 
@@ -85,25 +104,22 @@ const Admin = () => {
           <div key={item.id}>
             <div
               onClick={() => handleSectionSelect(item)}
-              className={`flex items-center p-4 cursor-pointer hover:bg-blue-50 transition-colors duration-200 ${
-                activeSection === item.id
-                  ? "bg-blue-100 border-r-4 border-blue-600"
-                  : ""
-              }`}
+              className={`flex items-center p-4 cursor-pointer hover:bg-blue-50 transition-colors duration-200 ${activeSection === item.id
+                ? "bg-blue-100 border-r-4 border-blue-600"
+                : ""
+                }`}
             >
               <item.icon
-                className={`mr-4 ${
-                  activeSection === item.id ? "text-blue-600" : "text-gray-500"
-                }`}
+                className={`mr-4 ${activeSection === item.id ? "text-blue-600" : "text-gray-500"
+                  }`}
                 size={24}
               />
               <div>
                 <div
-                  className={`font-semibold ${
-                    activeSection === item.id
-                      ? "text-blue-700"
-                      : "text-gray-700"
-                  }`}
+                  className={`font-semibold ${activeSection === item.id
+                    ? "text-blue-700"
+                    : "text-gray-700"
+                    }`}
                 >
                   {item.label}
                 </div>
@@ -117,26 +133,23 @@ const Admin = () => {
                   <div
                     key={subItem.id}
                     onClick={() => handleSubSectionSelect(subItem)}
-                    className={`flex items-center p-2 cursor-pointer hover:bg-blue-50 transition-colors duration-200 ${
-                      activeSubSection === subItem.id
-                        ? "bg-blue-100 border-r-4 border-blue-600"
-                        : ""
-                    }`}
+                    className={`flex items-center p-2 cursor-pointer hover:bg-blue-50 transition-colors duration-200 ${activeSubSection === subItem.id
+                      ? "bg-blue-100 border-r-4 border-blue-600"
+                      : ""
+                      }`}
                   >
                     <subItem.icon
-                      className={`mr-3 ${
-                        activeSubSection === subItem.id
-                          ? "text-blue-600"
-                          : "text-gray-500"
-                      }`}
+                      className={`mr-3 ${activeSubSection === subItem.id
+                        ? "text-blue-600"
+                        : "text-gray-500"
+                        }`}
                       size={20}
                     />
                     <span
-                      className={`text-sm ${
-                        activeSubSection === subItem.id
-                          ? "text-blue-700"
-                          : "text-gray-700"
-                      }`}
+                      className={`text-sm ${activeSubSection === subItem.id
+                        ? "text-blue-700"
+                        : "text-gray-700"
+                        }`}
                     >
                       {subItem.label}
                     </span>
