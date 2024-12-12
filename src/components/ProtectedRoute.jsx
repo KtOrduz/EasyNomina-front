@@ -3,19 +3,17 @@ import { useAuthStore } from "../store/authStore";
 import PropTypes from "prop-types";
 
 const ProtectedRoute = ({ children }) => {
-  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  if (!user) {
-    // Si el usuario no está autenticado, redirige al login
+  if (!isAuthenticated) {
     return <Navigate to="/" />;
   }
 
-  // Si está autenticado, renderiza el contenido protegido
   return children;
 };
 
 ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired, // Validamos que children sea un nodo React
+  children: PropTypes.node.isRequired,
 };
 
 export { ProtectedRoute };

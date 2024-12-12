@@ -4,6 +4,7 @@ import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 import { ImSpinner8 } from "react-icons/im";
 import { useAuthStore } from "../store/authStore";
 import { loginRequest } from "../api/auth";
+import axios from "axios";
 
 
 const Login = () => {
@@ -19,6 +20,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const setUser = useAuthStore((state) => state.setUser);
+  const clearUser = useAuthStore((state) => state.clearUser);
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
 
@@ -71,13 +73,39 @@ const Login = () => {
       setIsLoading(true);
       try {
         const response = await loginRequest(formData);
-        if (response.status === 200) {
-          setUser(response.data);
+        
+        console.log('Respuesta del login:', response);
+        
+        if (response.status === 200 || response.status === 204) {
+          const userData = {
+            email: formData.email,
+            isAuthenticated: true
+          };
+
+          setUser(userData);
+          
+          try {
+            const employeesResponse = await axios.get(
+              'https://easynomina-back.onrender.com/api/employees',
+              { withCredentials: true }
+            );
+            
+            if (employeesResponse.status === 200 || employeesResponse.status === 204) {
+              navigate("/admin");
+            } else {
+              throw new Error('No se pudo verificar la autenticación');
+            }
+          } catch (authError) {
+            console.error('Error verificando autenticación:', authError);
+            setErrorMessage("Error de autenticación. Por favor, intente nuevamente.");
+            clearUser();
+          }
         }
       } catch (err) {
-        console.error("Error en el inicio de sesión:", err);
+        console.error("Error en login:", err);
         setErrorMessage(
-          err.response?.data?.message || "Error al iniciar sesión, intente nuevamente."
+          err.response?.data?.message || 
+          "Error al iniciar sesión. Por favor, intente nuevamente."
         );
       } finally {
         setIsLoading(false);

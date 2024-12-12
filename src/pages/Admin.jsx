@@ -11,6 +11,7 @@ import EmployeeRegistration from "./Module/Admin/EmployeeRegistration.jsx";
 import NomRegistration from "./Module/Admin/NomRegistration.jsx";
 import NewsRegistration from "./Module/Admin/NewsRegistration.jsx";
 import NewsOthersRegistration from "./Module/Admin/NewsOthersRegistration.jsx";
+import EmployeeManagement from "./Module/Admin/EmployeeManagement.jsx";
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -28,6 +29,7 @@ const Admin = () => {
           id: "gestion-informacion",
           label: "Gestión de información",
           icon: ClipboardList,
+          component: <EmployeeManagement />,
         },
         {
           id: "registro-empleados",

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { registerNomRequest } from "../../../api/auth";
+import { registerEmployeeRequest } from "../../../api/auth";
 import  { useEffect, useState } from "react";
 
 
@@ -42,7 +42,7 @@ const NomRegistration = () => {
             total: parseFloat(values.total)
         };
 
-        const info = await registerNomRequest(formattedData);
+        const info = await registerEmployeeRequest(formattedData);
         console.log(info);
     };
 

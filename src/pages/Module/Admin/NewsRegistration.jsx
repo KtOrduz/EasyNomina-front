@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { registerNewsRequest } from "../../../api/auth";
+import { registerEmployeeRequest } from "../../../api/auth";
 import { useEffect, useState } from "react";
 
 const NewsRegistration = () => {
@@ -31,7 +31,7 @@ const NewsRegistration = () => {
             }
         };
 
-        const info = await registerNewsRequest(formattedData);
+        const info = await registerEmployeeRequest(formattedData);
         console.log(info)
 
         };
