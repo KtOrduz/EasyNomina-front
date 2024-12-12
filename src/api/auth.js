@@ -7,4 +7,4 @@ export const loginRequest = (credentials) =>
 
 // Otros métodos si es necesario
 export const registerEmployeeRequest = (employee) =>
-  axios.post(`${API}/employee`, employee );
+  axios.post(`${API}/employee`, employee, { withCredentials: true });

@@ -4,15 +4,32 @@ import { registerEmployeeRequest } from "../../../api/auth";
 const EmployeeRegistration = () => {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = handleSubmit(async (values) => {
-    const res = await registerEmployeeRequest(values);
-    console.log(res);
-  });
+  const onSubmit = async (values) => {
+    // Estructura los datos de acuerdo con el formato solicitado
+    const formattedData = {
+      nombre: values.nombre,
+      documento: values.documento,
+      cargo: values.cargo,
+      salario_base: parseFloat(values.salario_base),
+      fecha_contratacion: values.fecha_contratacion,
+      horario: {
+        tipo: values.tipo_horario,
+        horas_diarias: parseInt(values.horas_diarias, 10),
+      },
+      contacto: {
+        telefono: values.telefono,
+        email: values.email,
+      },
+    };
+
+    const info = await registerEmployeeRequest(formattedData);
+    console.log(info);
+  };
 
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">Registro de Empleados</h1>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <input
             type="text"
@@ -35,7 +52,6 @@ const EmployeeRegistration = () => {
             {...register("cargo", { required: true })}
             placeholder="Cargo"
             className="w-full border rounded p-2"
-            required
           />
         </div>
         <div>
@@ -44,23 +60,6 @@ const EmployeeRegistration = () => {
             {...register("salario_base", { required: true })}
             placeholder="Salario Base"
             className="w-full border rounded p-2"
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            {...register("subsidio_transporte", { required: true })}
-            placeholder="Subsidio Transporte"
-            className="w-full border rounded p-2"
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            {...register("otros_beneficios", { required: true })}
-            placeholder="Otros Beneficios"
-            className="w-full border rounded p-2"
           />
         </div>
         <div>
@@ -68,7 +67,6 @@ const EmployeeRegistration = () => {
             type="date"
             {...register("fecha_contratacion", { required: true })}
             className="w-full border rounded p-2"
-            required
           />
         </div>
         <div>
@@ -77,7 +75,6 @@ const EmployeeRegistration = () => {
             {...register("tipo_horario", { required: true })}
             placeholder="Tipo de Horario"
             className="w-full border rounded p-2"
-            required
           />
         </div>
         <div>
@@ -86,16 +83,14 @@ const EmployeeRegistration = () => {
             {...register("horas_diarias", { required: true })}
             placeholder="Horas Diarias"
             className="w-full border rounded p-2"
-            required
           />
         </div>
         <div>
           <input
-            type="number"
+            type="text"
             {...register("telefono", { required: true })}
             placeholder="Teléfono"
             className="w-full border rounded p-2"
-            required
           />
         </div>
         <div>
@@ -104,14 +99,13 @@ const EmployeeRegistration = () => {
             {...register("email", { required: true })}
             placeholder="Email"
             className="w-full border rounded p-2"
-            required
           />
         </div>
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Cargar
+          Registrar
         </button>
       </form>
     </div>
