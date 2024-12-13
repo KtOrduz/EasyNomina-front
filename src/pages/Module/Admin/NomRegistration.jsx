@@ -1,111 +1,151 @@
 import { useForm } from "react-hook-form";
-import { registerEmployeeRequest } from "../../../api/auth";
-import  { useEffect, useState } from "react";
-
+import { useEmployeeSelection } from "../../../store/useEmployeeSelection";
+import { useNavigate } from "react-router-dom";
 
 const NomRegistration = () => {
-    const { register, handleSubmit } = useForm();
-    const [employee, setEmployees] = useState([]);
+    const { register, handleSubmit, setValue } = useForm();
+    const { employees, loading, error, handleEmployeeChange } = useEmployeeSelection();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch('/api/employees') // Ajusta la URL según tu configuración
-            .then((response) => response.json())
-            .then((data) => setEmployees(data))
-            .catch((error) => console.error("Error al cargar los empleados:", error));
-    }, []);
+    
+    const handleNavigate = () => {
+        navigate("/admin/employee-management");
+    };
 
+    // Manejo del envío del formulario
     const onSubmit = async (values) => {
-        // Estructura los datos de acuerdo con el formato solicitado
         const formattedData = {
-            
             periodo: {
                 inicio: values.periodoInicio,
-                fin: values.periodoFin
+                fin: values.periodoFin,
             },
             empleado: {
-                nombre: values.nombreEmpleado,
-                identificacion: values.identificacion
+                nombre: values.nombre,
+                identificacion: values.identificacion,
             },
             laboral: {
                 diasLaborados: parseInt(values.diasLaborados, 10),
-                salarioBase: parseFloat(values.salario)
+                salarioBase: parseFloat(values.salario),
             },
             compensaciones: {
                 horasExtras: parseFloat(values.horasExtras),
-                otrosBeneficios: parseFloat(values.otrosBeneficios)
+                otrosBeneficios: parseFloat(values.otrosBeneficios),
             },
             deducciones: {
                 salud: parseFloat(values.deduccionSalud),
                 pension: parseFloat(values.deduccionPension),
-                otras: parseFloat(values.otrasDeducciones)
+                otras: parseFloat(values.otrasDeducciones),
             },
-            total: parseFloat(values.total)
+            total: parseFloat(values.total),
         };
 
-        const info = await registerEmployeeRequest(formattedData);
-        console.log(info);
+        console.log("Datos enviados:", formattedData);
     };
+
+    // Mostrar spinner mientras se cargan los empleados
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+   
+    if (error) {
+        return (
+            <div className="text-center text-red-600 p-4">
+                {error}
+            </div>
+        );
+    }
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-4">Registro de Nomina</h1>
+            <h1 className="text-xl font-bold mb-4">Registro de Nómina</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Selección de empleado */}
                 <div className="mb-4">
+                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+                        Nombre del Empleado
+                    </label>
                     <select
                         {...register("nombre", { required: true })}
+                        id="nombre"
                         className="w-full border rounded p-2"
+                        onChange={(event) => handleEmployeeChange(event, setValue)}
                     >
                         <option value="">Seleccione el nombre del empleado</option>
-                        {employee.map((employee) => (
-                            <option key={employee.id} value={employee.nombre}>
-                                {employee.nombre}
+                        {employees.map((emp) => (
+                            <option key={emp._id} value={emp.nombre}>
+                                {emp.nombre}
                             </option>
                         ))}
                     </select>
-                    {/* {errors.nombre && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
-                <div>
-                    <input
-                        type="date"
-                        {...register("periodoInicio", { required: true })}
-                        className="w-full border rounded p-2"
-                    />
-                </div>
-                <div>
-                    <input
-                        type="date"
-                        {...register("periodoFin", { required: true })}
-                        className="w-full border rounded p-2"
-                    />
-                </div>
-                <div>
+
+                {/* Campos del formulario */}
+                <div className="mb-4">
+                    <label htmlFor="identificacion" className="block text-sm font-medium text-gray-700">
+                        Identificación
+                    </label>
                     <input
                         type="text"
                         {...register("identificacion", { required: true })}
-                        placeholder="Documento"
+                        id="identificacion"
+                        className="w-full border rounded p-2"
+                        readOnly
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="periodoInicio" className="block text-sm font-medium text-gray-700">
+                        Inicio del Periodo
+                    </label>
+                    <input
+                        type="date"
+                        {...register("periodoInicio", { required: true })}
+                        id="periodoInicio"
                         className="w-full border rounded p-2"
                     />
                 </div>
                 <div className="mb-4">
+                    <label htmlFor="periodoFin" className="block text-sm font-medium text-gray-700">
+                        Fin del Periodo
+                    </label>
+                    <input
+                        type="date"
+                        {...register("periodoFin", { required: true })}
+                        id="periodoFin"
+                        className="w-full border rounded p-2"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="diasLaborados" className="block text-sm font-medium text-gray-700">
+                        Días laborados
+                    </label>
                     <input
                         type="number"
                         {...register("diasLaborados", { required: true })}
                         placeholder="Días Laborados"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.diasLaborados && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
                 <div className="mb-4">
+                    <label htmlFor="salario" className="block text-sm font-medium text-gray-700">
+                        Salario Base
+                    </label>
                     <input
-                        type="number"
-                        step="0.01"
+                        type="text"
                         {...register("salario", { required: true })}
-                        placeholder="Salario Base"
+                        id="salario"
                         className="w-full border rounded p-2"
+                        readOnly
                     />
-                    {/* {errors.salario && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
                 <div className="mb-4">
+                    <label htmlFor="horasExtras" className="block text-sm font-medium text-gray-700">
+                        Horas Extras
+                    </label>
                     <input
                         type="number"
                         step="0.01"
@@ -113,10 +153,11 @@ const NomRegistration = () => {
                         placeholder="Horas Extras"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.horasExtras && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
-
                 <div className="mb-4">
+                    <label htmlFor="otrosBeneficios" className="block text-sm font-medium text-gray-700">
+                        Otros Beneficios
+                    </label>
                     <input
                         type="number"
                         step="0.01"
@@ -124,10 +165,11 @@ const NomRegistration = () => {
                         placeholder="Otros Beneficios"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.otrosBeneficios && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
-
                 <div className="mb-4">
+                    <label htmlFor="deduccionSalud" className="block text-sm font-medium text-gray-700">
+                        Deducción Salud
+                    </label>
                     <input
                         type="number"
                         step="0.01"
@@ -135,10 +177,11 @@ const NomRegistration = () => {
                         placeholder="Deducción Salud"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.deduccionSalud && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
-
                 <div className="mb-4">
+                    <label htmlFor="deduccionPension" className="block text-sm font-medium text-gray-700">
+                        Deducción Pensión
+                    </label>
                     <input
                         type="number"
                         step="0.01"
@@ -146,10 +189,11 @@ const NomRegistration = () => {
                         placeholder="Deducción Pensión"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.deduccionPension && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
-
                 <div className="mb-4">
+                    <label htmlFor="otrasDeducciones" className="block text-sm font-medium text-gray-700">
+                        Otras Deducciones
+                    </label>
                     <input
                         type="number"
                         step="0.01"
@@ -157,10 +201,11 @@ const NomRegistration = () => {
                         placeholder="Otras Deducciones"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.otrasDeducciones && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
-
                 <div className="mb-4">
+                    <label htmlFor="total" className="block text-sm font-medium text-gray-700">
+                        Total
+                    </label>
                     <input
                         type="number"
                         step="0.01"
@@ -168,22 +213,22 @@ const NomRegistration = () => {
                         placeholder="Total"
                         className="w-full border rounded p-2"
                     />
-                    {/* {errors.total && <span className="text-red-500">Este campo es obligatorio</span>} */}
                 </div>
+
+                {/* Botones de acción */}
                 <div className="flex justify-between mt-4">
-                <button
-                    type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    Guardar
-                </button>
-               
+                    <button
+                        type="submit"
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Guardar
+                    </button>
                     <button
                         type="button"
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                        onClick={() => console.log("Agregar empleado")}
+                        onClick={handleNavigate}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                     >
-                        Agregar Empleado
+                        Registrar empleado
                     </button>
                 </div>
             </form>
@@ -192,4 +237,3 @@ const NomRegistration = () => {
 };
 
 export default NomRegistration;
-

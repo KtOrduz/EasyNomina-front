@@ -1,20 +1,15 @@
 import { useForm } from "react-hook-form";
-import { registerEmployeeRequest } from "../../../api/auth";
-import { useEffect, useState } from "react";
+import { useEmployeeSelection } from "../../../store/useEmployeeSelection";
 
 const NewsRegistration = () => {
-    const { register, handleSubmit } = useForm();
-    const [employee, setEmployees] = useState([]);
+    const { register, handleSubmit, setValue } = useForm();
+    const { employees, loading, error, handleEmployeeChange } = useEmployeeSelection();
 
-    useEffect(() => {
-        fetch('/api/employees') // Ajusta la URL según tu configuración
-            .then((response) => response.json())
-            .then((data) => setEmployees(data))
-            .catch((error) => console.error("Error al cargar los empleados:", error));
-    }, []);
-  
+    
+    
+
     const onSubmit = async (values) => {
-        // Estructura los datos de acuerdo con el formato solicitado
+      
         const formattedData = {
             empleado: {
                 nombre: values.nombreEmpleado,
@@ -31,35 +26,58 @@ const NewsRegistration = () => {
             }
         };
 
-        const info = await registerEmployeeRequest(formattedData);
-        console.log(info)
+        console.log("Datos enviados:", formattedData);
 
         };
+        if (loading) {
+             return (
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+                );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center text-red-600 p-4">
+                {error}
+            </div>
+        );
+    }
 
     return (
         <div>
             <h1 className="text-xl font-bold mb-4">Registro de horas extras</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="mb-4">
-                <select
-                    {...register("nombre", { required: true })}
-                    className="w-full border rounded p-2"
-                >
-                    <option value="">Seleccione el nombre del empleado</option>
-                    {employee.map((employee) => (
-                        <option key={employee.id} value={employee.nombre}>
-                            {employee.nombre}
-                        </option>
-                    ))}
-                </select>
-                {/* {errors.nombre && <span className="text-red-500">Este campo es obligatorio</span>} */}
-            </div>
-                <div>
+                <div className="mb-4">
+                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+                        Nombre del Empleado
+                    </label>
+                    <select
+                        {...register("nombre", { required: true })}
+                        id="nombre"
+                        className="w-full border rounded p-2"
+                        onChange={(event) => handleEmployeeChange(event, setValue)}
+                    >
+                        <option value="">Seleccione el nombre del empleado</option>
+                        {employees.map((emp) => (
+                            <option key={emp._id} value={emp.nombre}>
+                                {emp.nombre}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="identificacion" className="block text-sm font-medium text-gray-700">
+                        Identificación
+                    </label>
                     <input
                         type="text"
-                        {...register("documento", { required: true })}
-                        placeholder="Documento"
+                        {...register("identificacion", { required: true })}
+                        id="identificacion"
                         className="w-full border rounded p-2"
+                        readOnly
                     />
                 </div>
              {/* Horas Extras */}
@@ -76,7 +94,7 @@ const NewsRegistration = () => {
                 ].map((item) => (
                     <div className="flex gap-4 mt-4" key={item.id}>
                         <div className="flex-1">
-                            <label className="block text-sm font-medium mb-1" htmlFor={`${item.id}Cantidad`}>{item.label}<span className="block">Cantidad</span></label>
+                            <label className="block text-sm font-medium text-gray-700" htmlFor={`${item.id}Cantidad`}>{item.label}<span className="block">Cantidad</span></label>
                             <input
                                 type="number"
                                 step="1"
@@ -86,7 +104,7 @@ const NewsRegistration = () => {
                             />
                         </div>
                         <div className="flex-1">
-                            <label className="block text-sm font-medium mb-1" htmlFor={`${item.id}Valor`}>{item.label}<span className="block">Valor</span></label>
+                            <label className="block text-sm font-medium text-gray-700" htmlFor={`${item.id}Valor`}>{item.label}<span className="block">Valor</span></label>
                             <input
                                 type="number"
                                 step="0.01"
@@ -99,7 +117,7 @@ const NewsRegistration = () => {
                 ))}
                 <div className="flex gap-4 mt-4">
                     <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1" htmlFor="totalRecargos">
+                            <label className="block text-sm font-medium text-gray-700" htmlFor="totalRecargos">
                             Total de Recargos y H.E.
                         </label>
                         <input
@@ -111,7 +129,7 @@ const NewsRegistration = () => {
                         />
                     </div>
                     <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1" htmlFor="valorTotalRecargos">
+                            <label className="block text-sm font-medium text-gray-700" htmlFor="valorTotalRecargos">
                             Valor Total de Recargos y H.E.
                         </label>
                         <input
@@ -141,7 +159,8 @@ const NewsRegistration = () => {
 
     );
 
-    
+   
 };
+
 
 export default NewsRegistration;
