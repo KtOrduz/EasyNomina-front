@@ -88,3 +88,72 @@ erDiagram
 - ⬜ **Optimización del Frontend Adaptativo**: Mejoras en la experiencia de usuario y diseño visual para una navegación fluida y eficiente. (Por hacer)
 
 - ⬜ **Pruebas de Seguridad**: Verificación de la protección de datos sensibles en el sistema, tanto para administradores como empleados. (Por hacer)
+
+## Estructura del proyecto
+La estructura principal del proyecto es la siguiente:
+
+```
+├── public
+└── src
+    ├── api         # Archivos relacionados con las llamadas a APIs
+    ├── assets      # Recursos estáticos como imágenes, estilos, etc.
+    ├── components  # Componentes reutilizables de la interfaz
+    ├── context     # Implementación del contexto global para el manejo del estado
+    ├── pages       # Páginas principales del proyecto
+    │   └── Module
+    │       └── Admin  # Submódulo relacionado con la administración
+    └── store       # Configuración del estado global (Redux, MobX, etc.)
+```
+
+## Requisitos previos
+Asegúrate de tener instalado lo siguiente antes de comenzar:
+
+- [Node.js](https://nodejs.org/) (v14 o superior recomendado)
+- [npm](https://www.npmjs.com/)
+
+## Instalación y configuración
+Sigue los pasos a continuación para configurar y ejecutar el proyecto localmente:
+
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/stente3/EasyNomina-front.git
+   ```
+
+2. Navega al directorio del proyecto:
+   ```bash
+   cd EasyNomina-front
+   ```
+
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+4. Inicia el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+
+5. Abre tu navegador y accede a:
+   ```
+   http://localhost:5173
+   ```
+
+## Scripts disponibles
+A continuación, se enumeran los scripts que puedes ejecutar:
+
+- `npm run dev`: Inicia el proyecto en modo desarrollo.
+- `npm run build`: Genera una versión optimizada para producción.
+- `npm run start`: Inicia el proyecto en modo producción después de construirlo.
+
+## Tecnologías utilizadas
+- [**axios**](https://axios-http.com/): Cliente HTTP para realizar solicitudes.
+- [**react**](https://react.dev/): Biblioteca para construir interfaces de usuario.
+- [**react-router**](https://reactrouter.com/): Manejo de rutas en aplicaciones React.
+- [**zustand**](https://zustand-demo.pmnd.rs/): Biblioteca para la gestión de estado global.
+- [**tailwindcss**](https://tailwindcss.com/): Framework de estilos CSS basado en utilidades.
+
+## Licencia
+Este proyecto está licenciado bajo la MIT License. Consulta el archivo [LICENSE](https://github.com/stente3/EasyNomina-front/blob/main/LICENSE) para más información.
+
+
