@@ -12,6 +12,7 @@ import NomRegistration from "./Module/Admin/NomRegistration.jsx";
 import NewsRegistration from "./Module/Admin/NewsRegistration.jsx";
 import NewsOthersRegistration from "./Module/Admin/NewsOthersRegistration.jsx";
 import EmployeeManagement from "./Module/Admin/EmployeeManagement.jsx";
+import NominaList from "./Module/Admin/NomList.jsx";
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -44,7 +45,22 @@ const Admin = () => {
       label: "Nóminas",
       icon: Briefcase,
       description: "Administración de pagos y procesos de nómina",
-      component: <NomRegistration />,
+       subMenu: [
+        {
+          id: "liquidar_nomina",
+          label: "Liquidar Nomina",
+          icon: ClipboardList,
+           component: <NomRegistration />,
+        },
+        {
+          id: "lista_nomina",
+          label: "Ver nominas",
+          icon: ClipboardList,
+          component: <NominaList />,
+        },
+      ],
+      
+      
     },
     {
       id: "novedades",
